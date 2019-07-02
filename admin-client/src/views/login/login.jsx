@@ -3,8 +3,14 @@ import {
   Form,
   Icon,
   Input,
-  Button
+  Button,
+  message
 } from 'antd';
+import {Redirect} from 'react-router-dom';
+
+import { reqLogin } from '../../api';
+import memoryUtils from '../../utils/memoryUtils';
+import storageUtils from '../../utils/storageUtils.js'
 
 import './login.less';
 import logo from '../../assets/images/logo.png';
@@ -12,11 +18,33 @@ import logo from '../../assets/images/logo.png';
 class Login extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
-    
-    this.props.form.validateFields((err, values) => {
+
+    this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        console.log('提交登陆的ajax请求', values)
+        //console.log('提交登陆的ajax请求', values)
         // 请求登陆
+        const { username, password } = values;
+        const result = await reqLogin(username, password);
+        //console.log('请求成功', result.data);
+        if (result.status === 0) {
+          //提示登录成功
+          message.success('登录成功');
+
+          //保存user
+          const user = result.data;
+          memoryUtils.user = user;  //保存到内存中
+          storageUtils.saveUser(user); //保存到localStorage中
+
+          //跳转到管理界面（不需要再回退到登录）
+          this.props.history.replace('/');
+        } else {
+          //登录失败
+          //提示错误信息
+          message.error(result.msg);
+        }
+
+      } else {
+        console.log('检验失败');
       }
     });
 
@@ -27,21 +55,28 @@ class Login extends Component {
 
   //对密码进行验证
   validatePwd = (rule, value, callback) => {
-    if(!value){
+    if (!value) {
       callback('密码必须输入'); //验证失败，并指定提示文本
-    }else if(value.length < 4){
+    } else if (value.length < 4) {
       callback('密码长度不能小于4位'); //验证失败，并指定提示文本
-    }else if(value.length > 12){
+    } else if (value.length > 12) {
       callback('密码长度不能大于12位 '); //验证失败，并指定提示文本
-    }else if(!/^[a-zA-Z0-9_]+$/.test(value)){
+    } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
       callback('密码必须时英文，数字或下划线组成'); //验证失败，并指定提示文本
-    }else{
+    } else {
       callback()  //验证通过
     }
   }
 
   render() {
-    const {getFieldDecorator } = this.props.form;
+
+    //如果用户已经登录，自动跳转到管理页面
+    const user = memoryUtils.user;
+    if(user && user._id){
+      return <Redirect to="/"/>
+    }
+
+    const { getFieldDecorator } = this.props.form;
     return (
       <div className="login">
         <header className="login-header">
@@ -54,13 +89,13 @@ class Login extends Component {
             <Form onSubmit={this.handleSubmit} className="login-form">
               <Form.Item>
                 {
-                  getFieldDecorator('username',{
+                  getFieldDecorator('username', {
                     //声明式验证：直接使用别人定义好的规则进行验证
                     rules: [
-                      {required: true, whitespace: true,message: '用户名必须输入!'},
-                      {min: 4,message: '用户名至少4位'},
-                      {max: 12,message: '用户名最多12位'},
-                      {pattern:/^[a-zA-Z0-9_]+$/, message:"用户名必须时英文，数字或下划线组成"}
+                      { required: true, whitespace: true, message: '用户名必须输入!' },
+                      { min: 4, message: '用户名至少4位' },
+                      { max: 12, message: '用户名最多12位' },
+                      { pattern: /^[a-zA-Z0-9_]+$/, message: "用户名必须时英文，数字或下划线组成" }
                     ],
                   })(
                     <Input
@@ -69,7 +104,7 @@ class Login extends Component {
                     />
                   )
                 }
-                  
+
               </Form.Item>
               <Form.Item>
                 {getFieldDecorator('password', {
