@@ -11,6 +11,7 @@ import User from '../user/user'
 import Bar from '../charts/bar/bar'
 import Line from '../charts/line/line'
 import Pie from '../charts/pie/pie'
+import Order from '../order/order'
 
 import memoryUtils from '../../utils/memoryUtils';
 
@@ -34,7 +35,7 @@ export default class Admin extends Component {
         </Sider>
         <Layout>
           <Header>Header</Header>
-          <Content>
+          <Content style={{margin:20,backgroundColor:'#fff'}}>
             <Switch>
               <Route path='/home' component={Home} />
               <Route path='/category' component={Category} />
@@ -44,6 +45,7 @@ export default class Admin extends Component {
               <Route path="/charts/bar" component={Bar} />
               <Route path="/charts/pie" component={Pie} />
               <Route path="/charts/line" component={Line} />
+              <Route path="/order" component={Order}/>
               <Redirect to='/home' />
             </Switch>
           </Content>
