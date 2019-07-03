@@ -1,10 +1,13 @@
 import React,{Component} from 'react';
 import {withRouter} from 'react-router-dom';
+
+import LinkButton from '../link-button/link-button';
 import {Modal} from 'antd';
 import menuList from '../../config/menuConfig';
 import {reqWeather} from '../../api';
 import {formateDate} from '../../utils/dateUtils';
 import memoryUtils from '../../utils/memoryUtils';
+import storageUtils from '../../utils/storageUtils';
 import './index.less';
 class Header extends Component{
   state = {
@@ -15,7 +18,7 @@ class Header extends Component{
 
   getTime = () => {
     //每隔1s获取当前时间，并更新状态数据currentTime
-    setInterval(() => {
+    this.intervalId = setInterval(() => {
       const currentTime = formateDate(Date.now());
       this.setState({currentTime});
     }, 1000)
@@ -52,10 +55,15 @@ class Header extends Component{
   logout = () => {
     //显示确认框
     Modal.confirm({
-      title: 'Do you Want to delete these items?',
-      content: 'Some descriptions',
-      onOk() {
-        console.log('OK');
+      //title: 'Do you Want to delete these items?',
+      content: '确定退出吗?',
+      onOk: () => {
+        //console.log('OK');
+        //删除保存的user数据
+        storageUtils.removeUser();
+        memoryUtils.user = {}
+        //跳转到login
+        this.props.history.replace('/login');
       },
       onCancel() {
         console.log('Cancel');
@@ -74,6 +82,13 @@ class Header extends Component{
     this.getWeather();
   }
 
+  /** 
+   * 当前组件销毁之前
+  */
+  componentWillUnmount(){
+    //清除定时器
+    clearInterval(this.intervalId);
+  }
   render(){
     const {currentTime, dayPictureUrl, weather} = this.state;
     const username = memoryUtils.user.username;
@@ -82,7 +97,8 @@ class Header extends Component{
       <div className="header">
         <div className="header-top">
           <span>欢迎, {username}</span>
-          <a href="javascript:;" onClick={this.logout}>退出</a>
+          {/* <a href="javascript:;" onClick={this.logout}>退出</a> */}
+          <LinkButton onClick={this.logout}>退出</LinkButton>
         </div>
         <div className="header-bottom">
           <div className="header-bottom-left">{title}</div>
