@@ -12,9 +12,16 @@ class UpdateForm extends Component{
     categoryName: PropTypes.string.isRequired
   }
 
+
+  componentWillMount(){
+    //将form对象通过setForm()传递给父组件
+    this.props.setForm(this.props.form);
+  }
+
+  
   render(){
-    const categoryName = this.props;
-    const { getFieldDecorator } = this.props.form
+    const {categoryName} = this.props;
+    const { getFieldDecorator} = this.props.form
     return (
       <Form>
         <Item>

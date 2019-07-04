@@ -34,9 +34,9 @@ class AddForm extends Component{
               <Select>
                 <Option value="0">一级分类</Option>
                 {
-                  categorys.length() > 0 ?categorys.map(c => 
-                    <Option value={c._id}>{c.name}</Option>
-                  ):null
+                  categorys.map(c => 
+                    <Option value={c._id} key={c._id}>{c.name}</Option>
+                  )
                 }
               </Select>
             )
@@ -46,6 +46,9 @@ class AddForm extends Component{
           {
             getFieldDecorator('categoryName', {
               initialValue: '',
+              rules: [
+                {required: true, message: '分类名称必须输入'}
+              ]
             })(
               <Input placeholder='请输入分类名称'/>
             )
