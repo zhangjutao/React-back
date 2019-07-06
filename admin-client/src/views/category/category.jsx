@@ -141,44 +141,37 @@ export default class Category extends Component {
   /** 
    * 添加分类
   */
-  addCategory = () => {
-    this.form.validateFields(async (err, values) => {
-      if (!err) {
-        // 隐藏确认框
-        this.setState({
-          showStatus: 0
-        })
+ addCategory = () => {
+  this.form.validateFields(async (err, values) => {
+    if (!err) {
+      // 隐藏确认框
+      this.setState({
+        showStatus: 0
+      })
 
-        // 收集数据, 并提交添加分类的请求
-        const {parentId, categoryName} = values
-        // 清除输入数据
-        this.form.resetFields()
-        const result = await reqAddCategory(categoryName, parentId)
-        if(result.status===0) {
+      // 收集数据, 并提交添加分类的请求
+      const {parentId, categoryName} = values
+      // 清除输入数据
+      this.form.resetFields()
+      const result = await reqAddCategory(categoryName, parentId)
+      if(result.status===0) {
 
-          // 添加的分类就是当前分类列表下的分类
-          if(parentId===this.state.parentId) {
-            // 重新获取当前分类列表显示
-            this.getCategorys()
-          } else if (parentId==='0'){ // 在二级分类列表下添加一级分类, 重新获取一级分类列表, 但不需要显示一级列表
-            //刷新回到一级列表
-            // this.setState({
-            //   parentId:'0'
-            // },() => {
-            // this.getCategorys()
-            // })
-            //留在当前二级列表，更新一级列表数据
-            this.getCategorys('0')
-          }
+        // 添加的分类就是当前分类列表下的分类
+        if(parentId===this.state.parentId) {
+          // 重新获取当前分类列表显示
+          this.getCategorys()
+        } else if (parentId==='0'){ // 在二级分类列表下添加一级分类, 重新获取一级分类列表, 但不需要显示一级列表
+          this.getCategorys('0')
         }
       }
-    })
-  }
+    }
+  })
+}
   /** 
    * 显示更新的对话框
   */
   showUpdate = (category) => {
-    console.log(category);
+    //console.log(category);
     //保存分类对象
     this.category = category;
     //更新状态
@@ -190,30 +183,25 @@ export default class Category extends Component {
   /** 
    * 更新分类
   */
-  updateCategory = () => {
-    //进行表单验证，只有通过了才处理
-    this.form.validateFields(async (err, values) => {
-      if(!err){
-        //1.隐藏确认框
-        this.setState({
-          showStatus:0
-        })
-        //准备数据
-        const categoryId = this.category._id;
-        //console.log(this.form);
-        const {categoryName} = values;
-        //清除输入数据
-        this.form.resetFields();
-    
-        //2.发请求更新分类
-        const result = await reqUpdateCategory({categoryId, categoryName})
-        if(result.status === 0){
-          //3.重新显示列表
-          this.getCategorys();  
-        }
-      }
+  updateCategory = async () => {
+    //1.隐藏确认框
+    this.setState({
+      showStatus:0
     })
 
+    //准备数据
+    const categoryId = this.category._id;
+    //console.log(this.form);
+    const categoryName = this.form.getFieldValue('categoryName');
+    //清除输入数据
+    this.form.resetFields();
+
+    //2.发请求更新分类
+    const result = await reqUpdateCategory({categoryId, categoryName})
+    if(result.status === 0){
+      //3.重新显示列表
+      this.getCategorys();  
+    }
     
 
   }

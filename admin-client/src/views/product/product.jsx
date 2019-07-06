@@ -6,6 +6,7 @@ import ProductAddUpdate from './add-update';
 import ProductDetail from './detail';
 //import Loadable from 'react-loadable'  //动态加载路由组件
 
+import './product.less';
 
 export default class Product extends Component{
 
