@@ -149,7 +149,6 @@ class ProductAddUpdate extends PureComponent {
         }
         const imgs = this.pw.current.getImgs()
         const detail = this.editor.current.getDetail()
-
         const product = {name, desc, price, imgs, detail, pCategoryId, categoryId}
 
         // 如果是更新, 需要添加_id
@@ -177,7 +176,7 @@ class ProductAddUpdate extends PureComponent {
 
   componentWillMount () {
     // 取出携带的state
-    const product = this.props.location.state  // 如果是添加则product没值, 否则为更新页面product有值
+    const product = this.props.location.state  // 如果是添加没值, 否则有值
     // 保存是否是更新的标识
     this.isUpdate = !!product
     // 保存商品(如果没有, 保存是{})
@@ -219,10 +218,12 @@ class ProductAddUpdate extends PureComponent {
 
     const {getFieldDecorator} = this.props.form
 
+    //const text = '测试';
+
     return (
       <Card title={title}>
         <Form {...formItemLayout}>
-          <Item label="商品名称">
+          <Item label={`商品名称text`}>
             {
               getFieldDecorator('name', {
                 initialValue: product.name,

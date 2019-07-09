@@ -59,7 +59,7 @@ export const reqSearchProducts = ({pageNum, pageSize, searchName, searchType}) =
 export const reqDeleteImg = (name) => ajax(BASE + '/manage/img/delete', {name}, 'POST')
 
 // 添加/修改商品
-export const reqAddOrUpdateProduct = (product) => ajax(BASE + '/manage/product/' + ( product._id?'update':'add'), product, 'POST')
+export const reqAddOrUpdateProduct = (product1) => ajax(BASE + '/manage/product/' + (product1._id?'update':'add'), product1, 'POST')
 // 修改商品
 // export const reqUpdateProduct = (product) => ajax(BASE + '/manage/product/update', product, 'POST')
 
