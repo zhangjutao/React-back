@@ -197,7 +197,6 @@ export default class Role extends Component {
                 role
               })
             }
-
           }}
           onRow={this.onRow}
         />
